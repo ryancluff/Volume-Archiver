@@ -1,0 +1,24 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: volume-archiver-operator
+  labels:
+    app: volume-archiver-operator
+  namespace: volume-archiver
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: volume-archiver-operator
+  template:
+    metadata:
+      labels:
+        app: volume-archiver-operator
+    spec:
+      containers:
+        - name: volume-archiver-operator
+          image: registry.it.rcluff.com/va-operator:0.1

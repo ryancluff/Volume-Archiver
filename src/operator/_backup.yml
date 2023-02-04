@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-sh
+  namespace: homeassistant
+data:
+  backup.sh: |
+    #!/bin/bash
+    for i in /mnt/source/* ; do
+      if [ -d "$i" ]; then
+        tar cvzf "/mnt/destination/$(basename $i).tar.gz" "/mnt/source/$(basename $i)"
+      fi
+    done
+
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backup
+  namespace: homeassistant
+spec:
+  template:
+    spec:
+      containers:
+        - name: backup
+          image: ubuntu:20.04
+          command:
+            - "job/restore.sh"
+          tty: true
+          volumeMounts:
+            - name: backup-sh
+              mountPath: /job
+            - name: backup
+              mountPath: /mnt/destination
+            - name: homeassistant-config
+              mountPath: /mnt/source/homeassistant-config
+      volumes:
+        - name: backup-sh
+          configMap:
+            name: backup-sh
+            defaultMode: 0777
+        - name: backup
+          nfs:
+            server: nas01.rcluff.com
+            path: /mnt/storage/backup
+        - name: homeassistant-config
+          persistentVolumeClaim:
+            claimName: homeassistant-config
+      restartPolicy: Never
+  backoffLimit: 1
