@@ -1,6 +1,7 @@
+# Start from ubuntu:22.04 base image
 FROM ubuntu:22.04
 
-# Install dependencies
+# Install python and other dependencies
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     rm -rf /var/lib/apt/lists/* && \
@@ -11,10 +12,8 @@ COPY ./requirements.txt .
 
 RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
-COPY ./image_generator.yml .
+COPY ./templates ./templates
 COPY ./main.py .
-COPY ./settings.py .
-COPY ./status.py .
 
 # This is what runs when the container is started
-CMD ["python3", "main.py"]
+CMD ["kopf", "run", "main.py", "--verbose", "-A"]
