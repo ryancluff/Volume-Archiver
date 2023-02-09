@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: restore-sh
+  namespace: homeassistant
+data:
+  restore.sh: |
+    #!/bin/bash
+    for i in /mnt/source/* ; do
+      if [ -d "$i" ]; then
+        tar -xvzf "/mnt/destination/$(basename $i).tar.gz"
+      fi
+    done

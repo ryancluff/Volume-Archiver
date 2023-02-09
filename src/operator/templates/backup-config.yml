@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{pvc_name}-backup-script"
+  namespace: "{namespace}"
+data:
+  backup.sh: |
+    #!/bin/bash
+    for i in /mnt/source/* ; do
+      if [ -d "$i" ]; then
+        tar cvzf "/mnt/destination/$(basename $i).tar.gz" "/mnt/source/$(basename $i)"
+      fi
+    done

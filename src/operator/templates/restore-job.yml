@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{pvc_name}-restore-job"
+  namespace: "{namespace}"
+spec:
+  template:
+    spec:
+      containers:
+        - name: "{pvc_name}-restore"
+          image: ubuntu:20.04
+          command:
+            - "job/restore.sh"
+          volumeMounts:
+            - name: restore-sh
+              mountPath: /job
+            - name: backup
+              mountPath: /mnt/destination
+            - name: "{pvc_name}"
+              mountPath: "/mnt/source/{pvc_name}"
+      volumes:
+        - name: restore-sh
+          configMap:
+            name: restore-sh
+            defaultMode: 0777
+        - name: backup
+          nfs:
+            server: nas01.rcluff.com
+            path: /mnt/storage/backup
+        - name: "{pvc_name}"
+          persistentVolumeClaim:
+            claimName: "{pvc_name}"
+      restartPolicy: Never
+  backoffLimit: 1
