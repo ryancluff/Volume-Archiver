@@ -65,6 +65,7 @@ rules:
     resources:
       - jobs
       - cronjobs
+      - jobs/status
     verbs:
       - create
       - patch

@@ -1,27 +1,29 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{pvc_name}-restore-job"
+  name: "{pvc_name}-backup-job"
   namespace: "{namespace}"
+  annotations:
+    volumearchiver.rcluff.com/backupjob: ""
 spec:
   template:
     spec:
       containers:
-        - name: "{pvc_name}-restore"
+        - name: "{pvc_name}-backup"
           image: ubuntu:20.04
           command:
-            - "job/restore.sh"
+            - "job/backup.sh"
           volumeMounts:
-            - name: restore-sh
+            - name: backup-script
               mountPath: /job
             - name: backup
               mountPath: /mnt/destination
             - name: "{pvc_name}"
               mountPath: "/mnt/source/{pvc_name}"
       volumes:
-        - name: restore-sh
+        - name: backup-script
           configMap:
-            name: restore-sh
+            name: "{pvc_name}-backup-script"
             defaultMode: 0777
         - name: backup
           nfs:

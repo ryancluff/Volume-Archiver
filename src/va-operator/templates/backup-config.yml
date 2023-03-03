@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: "{pvc_name}-backup-script"
   namespace: "{namespace}"
+  annotations:
+    volumearchiver.rcluff.com/backupjob: ""
 data:
   backup.sh: |
     #!/bin/bash

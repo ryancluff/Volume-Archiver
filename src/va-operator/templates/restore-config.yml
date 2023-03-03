@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: restore-sh
   namespace: homeassistant
+  annotations:
+    volumearchiver.rcluff.com/backupjob: ""
 data:
   restore.sh: |
     #!/bin/bash

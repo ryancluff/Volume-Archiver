@@ -34,4 +34,3 @@ spec:
             - name: debug
               containerPort: 5678
               protocol: TCP
-
