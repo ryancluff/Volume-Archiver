@@ -1,0 +1,9 @@
+---
+apiVersion: volumearchiver.rcluff.com/v1
+kind: BackupJob
+metadata:
+  name: jellyfin-config-backup
+  namespace: jellyfin
+
+spec:
+  pvc: jellyfin-config
